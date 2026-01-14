@@ -1,20 +1,27 @@
 import sqlite3
 import os
 
-conexao = sqlite3.connect('../db/financas.db')
+# Define o caminho do banco (sobe uma pasta e entra na /db)
+db_path = '../db/financas.db'
+
+# Garante que a pasta 'db' exista
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
+
+conexao = sqlite3.connect(db_path)
 cursor = conexao.cursor()
 
-# Tabelas
-
+# 1. Tabela de Usuário (com saldo_inicial)
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS usuario (
     id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    senha_hash TEXT NOT NULL
+    senha_hash TEXT NOT NULL,
+    saldo_inicial REAL DEFAULT 0.0
 )
 """)
 
+# 2. Tabela de Categoria
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS categoria (
     id_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +30,7 @@ CREATE TABLE IF NOT EXISTS categoria (
 )
 """)
 
+# 3. Tabela de Transação
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS transacao (
     id_transacao INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,56 +44,35 @@ CREATE TABLE IF NOT EXISTS transacao (
 )
 """)
 
+# 4. Tabela de Metas (com coluna descrição corrigida)
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS meta_futura (
     id_meta INTEGER PRIMARY KEY AUTOINCREMENT,
     id_usuario INTEGER NOT NULL,
     nome TEXT NOT NULL,
+    descricao TEXT,
     valor_alvo REAL NOT NULL,
     data_limite DATE,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 )
 """)
 
-# Inserir dados
-
-cursor.execute("""
-INSERT OR IGNORE INTO usuario (id_usuario, nome, email, senha_hash)
-VALUES (1, 'Bianca', 'bianca@email.com', 'hash123')
-""")
-
-categorias = [
+# --- INSERIR APENAS CATEGORIAS BÁSICAS ---
+# Categorias são essenciais para o funcionamento do app desde o início
+categorias_padrao = [
     ('Alimentação', 'saida'),
-    ('Cartão de Crédito', 'saida'),
-    ('Aluguel / Parcela de Financiamento', 'saida'),
-    ('Salário Mensal', 'entrada')
+    ('Lazer', 'saida'),
+    ('Saúde', 'saida'),
+    ('Transporte', 'saida'),
+    ('Moradia', 'saida'),
+    ('Salário', 'entrada'),
+    ('Investimentos', 'entrada'),
+    ('Outros', 'entrada')
 ]
 
-cursor.executemany("INSERT OR IGNORE INTO categoria (nome, tipo) VALUES (?, ?)", categorias)
-
-transacoes = [
-    (1, 1, 'Almoço restaurante', 45.50, '2026-01-05'),
-    (1, 1, 'Supermercado', 230.00, '2026-01-03'),
-    (1, 2, 'Fatura cartão', 1200.00, '2026-01-01'),
-    (1, 3, 'Aluguel apartamento', 1500.00, '2026-01-01'),
-    (1, 4, 'Salário Janeiro', 5000.00, '2026-01-01')
-]
-cursor.executemany("""
-INSERT OR IGNORE INTO transacao (id_usuario, id_categoria, descricao, valor, data)
-VALUES (?, ?, ?, ?, ?)
-""", transacoes)
-
-metas = [
-    (1, 'Viagem Europa', 'Economizar para viagem de 2 semanas', 10000.00, '2026-12-31'),
-    (1, 'Comprar Notebook', 'Trocar notebook antigo por um novo', 6000.00, '2026-06-30'),
-    (1, 'Reserva de Emergência', 'Guardar dinheiro para imprevistos', 5000.00, '2026-09-30')
-]
-cursor.executemany("""
-INSERT OR IGNORE INTO meta_futura (id_usuario, nome, descricao, valor_alvo, data_limite)
-VALUES (?, ?, ?, ?, ?)
-""", metas)
+cursor.executemany("INSERT OR IGNORE INTO categoria (nome, tipo) VALUES (?, ?)", categorias_padrao)
 
 conexao.commit()
 conexao.close()
 
-print("Banco simplificado criado e populado com sucesso em db/financas.db!")
+print(f"Estrutura do banco criada com sucesso em: {os.path.abspath(db_path)}")
