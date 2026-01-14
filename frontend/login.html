@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Finanças</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>💰 Bem-vindo</h1>
+            <p>Acesse seu controle financeiro</p>
+        </div>
+        
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="email" placeholder="seu@email.com">
+            
+            <label>Senha</label>
+            <input type="password" id="senha" placeholder="Sua senha">
+            
+            <button onclick="realizarLogin()" class="btn-meta">Entrar</button>
+        </div>
+        
+        <div class="auth-footer">
+            <span>Novo por aqui? <a href="cadastro.html">Crie uma conta</a></span>
+        </div>
+    </div>
+
+<script>
+    async function realizarLogin() {
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+
+        const resposta = await fetch('http://127.0.0.1:8000/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome: "", email, senha })
+        });
+
+        const resultado = await resposta.json();
+
+        if (resposta.ok) {
+            localStorage.setItem('id_usuario', resultado.id_usuario);
+            localStorage.setItem('nome_usuario', resultado.nome);
+
+            window.location.href = "index.html";
+        } else {
+            alert("Dados incorretos!");
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7f6;
+    margin: 0;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.grid-conteudo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.form-group input, .form-group select {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    font-weight: bold;
+}
+
+.btn-sucesso {
+    background: #27ae60;
+    color: white;
+}
+
+.btn-meta {
+    background: #2980b9;
+    color: white;
+}
+
+.btn-sair {
+    background: #e74c3c;
+    color: white;
+    width: auto;
+}
+
+.lista-estilizada {
+    list-style: none;
+    padding: 0;
+}
+
+.lista-estilizada li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+}
+
+.saldo-destaque {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.saldo-info h2 {
+    font-size: 3rem;
+    margin: 10px 0;
+}
+
+.btn-ajuste {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid white;
+    color: white;
+    padding: 8px 15px;
+    width: auto;
+    transition: 0.3s;
+}
+
+.btn-ajuste:hover {
+    background: white;
+    color: #27ae60;
+}
+
+.hidden {
+    display: none;
+}

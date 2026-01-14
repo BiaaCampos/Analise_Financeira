@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Controle Financeiro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Painel Financeiro</h1>
+    <div id="usuario-info">
+        Olá, <span id="nome-usuario">Usuário</span>!
+        <button onclick="logout()" class="btn-sair">Sair</button>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- SALDO -->
+    <section class="card saldo-destaque">
+        <div class="saldo-info">
+            <h3>Saldo Total Disponível</h3>
+            <h2 id="saldo-valor">R$ 0,00</h2>
+        </div>
+        <div class="saldo-acoes">
+            <button onclick="ajustarSaldoInicial()" class="btn-ajuste">
+                ⚙️ Ajustar Saldo Inicial
+            </button>
+        </div>
+    </section>
+
+    <!-- CARD DESPESAS -->
+    <div class="card">
+        <h3>Despesas Total</h3>
+        <p id="despesas-valor" class="valor negativo">R$ 0,00</p>
+    </div>
+
+    <div class="grid-conteudo">
+
+        <!-- COLUNA ESQUERDA -->
+        <section class="coluna">
+
+            <!-- DESPESA -->
+            <div class="card">
+                <h2>Registrar Despesa</h2>
+
+                <div class="form-group">
+                    <input type="date" id="despesa-data">
+
+                    <input type="text" id="despesa-local"
+                        placeholder="Onde gastou (ex: Mercado)">
+
+                    <input type="text" id="despesa-descricao"
+                        placeholder="Com o que foi gasto">
+
+                    <input type="number" id="despesa-valor"
+                        placeholder="Valor da despesa">
+
+                    <select id="despesa-pagamento">
+                        <option disabled selected>Forma de pagamento</option>
+                        <option>Dinheiro</option>
+                        <option>Débito</option>
+                        <option>Crédito</option>
+                        <option>Pix</option>
+                        <option>Boleto</option>
+                    </select>
+
+                    <select id="categoria-select">
+                        <option value="1">Alimentação</option>
+                        <option value="2">Lazer</option>
+                        <option value="3">Saúde</option>
+                        <option value="4">Transporte</option>
+                        <option value="5">Moradia</option>
+                        <option value="8">Outros</option>
+                    </select>
+
+                    <button onclick="salvarDespesa()" class="btn-sucesso">
+                        Registrar Despesa
+                    </button>
+                </div>
+            </div>
+
+            <!-- HISTÓRICO DE DESPESAS -->
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>Histórico de Despesas</h2>
+                    <button onclick="toggleDespesas()" class="btn-ajuste">
+                        Mostrar / Ocultar
+                    </button>
+                </div>
+
+                <ul id="lista-despesas" class="lista-estilizada hidden">
+                    <!-- preenchido via JS -->
+                </ul>
+            </div>
+
+            <!-- TRANSAÇÕES (mantido) -->
+
+
+
+
+                        <div class="card">
+                <h2>Nova Meta</h2>
+                <div class="form-group">
+                    <input type="text" id="meta-nome" placeholder="Nome da Meta">
+                    <input type="number" id="meta-valor" placeholder="Valor Alvo">
+                    <input type="date" id="meta-data">
+                    <button onclick="salvarMeta()" class="btn-meta">
+                        Criar Meta
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Minhas Metas</h2>
+                <ul id="lista-metas" class="lista-estilizada"></ul>
+            </div>
+
+        </section>
+
+        <!-- COLUNA DIREITA -->
+        <section class="coluna">
+                        <div class="card">
+                <h2>Nova Transação</h2>
+                <div class="form-group">
+                    <input type="text" id="desc" placeholder="Descrição (ex: Café)">
+                    <input type="number" id="valor" placeholder="Valor (ex: 5.50)">
+                    <input type="date" id="data">
+
+                    <select id="categoria-select">
+                        <option value="1">Alimentação</option>
+                        <option value="4">Salário</option>
+                    </select>
+
+                    <button onclick="salvarTransacao()" class="btn-sucesso">
+                        Adicionar
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Histórico de Transações</h2>
+                <ul id="lista-transacoes" class="lista-estilizada"></ul>
+            </div>
+
+
+        </section>
+
+    </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
