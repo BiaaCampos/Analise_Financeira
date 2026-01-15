@@ -1,3 +1,7 @@
+* {
+    font-family: 'Lexend Deca', sans-serif;
+}
+
 body {
     font-family: 'Segoe UI', sans-serif;
     background: #f4f7f6;
@@ -5,13 +9,57 @@ body {
 }
 
 header {
-    background: #2c3e50;
+    background: #482d57;
     color: white;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
+/* MENU LATERAL */
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #482d57;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    border-radius: 0px 20px 20px 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #ffffff;
+    display: block;
+    transition: 0.3s;
+    color: #f1d2f4;
+    transition: 0.3s;
+    transform: scale(1.05);
+}
+
+.sidenav a:hover {
+    color: #ffffff;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+
+/*  */
 
 .container {
     padding: 20px;
@@ -34,7 +82,7 @@ header {
 }
 
 .form-group input, .form-group select {
-    display: block;
+    display: flex;
     width: 100%;
     margin-bottom: 10px;
     padding: 8px;
@@ -52,19 +100,61 @@ button {
 }
 
 .btn-sucesso {
-    background: #27ae60;
-    color: white;
+    background: #e4c1f3;
+    color: rgb(88, 0, 102);
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.btn-sucesso:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    transform: scale(1.05);
 }
 
 .btn-meta {
-    background: #2980b9;
-    color: white;
+    background: #e4c1f3;
+    color: rgb(88, 0, 102);
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.btn-meta:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    transform: scale(1.05);
+}
+
+.btn-despesa{
+    background: #ff000015;
+    color: rgb(230, 3, 3);
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.btn-despesa:hover {
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.236);
+    transform: scale(1.05);
+}
+
+.btn-sair-div {
+    display: flex;
+    justify-content: center;
+    margin-top: 30em;
+    position: relative;
 }
 
 .btn-sair {
     background: #e74c3c;
     color: white;
     width: auto;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.btn-sair:hover {
+    background: #c0392b;
 }
 
 .lista-estilizada {
@@ -110,4 +200,109 @@ button {
 
 .hidden {
     display: none;
+}
+
+
+/* LOGIN */
+
+.auth-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.085);
+
+}
+
+.auth-card {
+    background-color: #645372;
+    padding: 100px;
+    border-radius: 30% 90% 30% 90% / 90% 90% 30% 60%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(-45deg, #86778f, #af8eb5, #574b6b, #482d57);
+    background-size: 400% 400%;
+    animation: gradientMove 8s ease infinite, blob 6s ease-in-out infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes blob {
+    0% {
+        border-radius: 42% 58% 55% 45% / 55% 45% 55% 45%;
+    }
+
+    50% {
+        border-radius: 58% 42% 45% 55% / 45% 55% 45% 55%;
+    }
+
+    100% {
+        border-radius: 42% 58% 55% 45% / 55% 45% 55% 45%;
+    }
+}
+
+.auth-header {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.label-login {
+    color: white;
+}
+
+.input-login {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: white;
+}
+
+.a-login {
+    color: #eed3f2;
+}
+
+/* MODAL SALDO */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    width: 300px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.modal-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
 }
