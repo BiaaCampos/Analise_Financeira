@@ -1,262 +1,269 @@
 // 1. CONSTANTES
 const API_URL = "http://127.0.0.1:8000";
-const usuarioId = localStorage.getItem('id_usuario');
+const usuarioId = localStorage.getItem("id_usuario");
 
-// 2. INICIALIZAÇÃO
+// 2. FUNÇÕES DE MOEDA
+function formatarMoeda(valor) {
+    return Number(valor).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
+
+function moedaParaNumero(valor) {
+    if (!valor) return 0;
+    return Number(
+        valor
+            .replace(/\s/g, "")
+            .replace("R$", "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+    );
+}
+
+function aplicarMascaraMoeda(input) {
+    if (!input) return;
+
+    input.addEventListener("input", () => {
+        let valor = input.value.replace(/\D/g, "");
+        valor = (Number(valor) / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+        input.value = valor;
+    });
+}
+
+    aplicarMascaraMoeda(document.getElementById("inputNovoSaldo"));
+    aplicarMascaraMoeda(document.getElementById("trans-valor"));
+    aplicarMascaraMoeda(document.getElementById("meta-valor"));
+    aplicarMascaraMoeda(document.getElementById("despesa-valor-input"));
+
+// 3. INICIALIZAÇÃO
 window.onload = async () => {
     if (!usuarioId) {
         window.location.href = "login.html";
         return;
     }
 
-    const nomeSalvo = localStorage.getItem('nome_usuario');
-    const nomeComp = document.getElementById('nome-usuario');
-    if (nomeComp) {
-        nomeComp.textContent = nomeSalvo && nomeSalvo !== "null" ? nomeSalvo : "Usuário";
-    }
+    const nomeSalvo = localStorage.getItem("nome_usuario");
+    document.getElementById("nome-usuario").textContent =
+        nomeSalvo && nomeSalvo !== "null" ? nomeSalvo : "Usuário";
 
     await carregarDadosIniciais();
     await carregarMetas();
 };
 
-// 3. CARREGAR DADOS (SALDO E TRANSAÇÕES)
+// 4. CARREGAR DADOS INICIAIS
 async function carregarDadosIniciais() {
     try {
-        // Busca dados do usuário (Saldo Inicial)
         const respUser = await fetch(`${API_URL}/usuarios/${usuarioId}`);
         const usuario = await respUser.json();
         const saldoInicial = Number(usuario.saldo_inicial) || 0;
 
-        document.getElementById('saldo-inicial-info').textContent = `Saldo Inicial: R$ ${saldoInicial.toFixed(2)}`;
+        document.getElementById("saldo-inicial-info").textContent =
+            `Saldo Inicial: ${formatarMoeda(saldoInicial)}`;
 
-        // Busca Transações
         const respTrans = await fetch(`${API_URL}/transacoes?usuario_id=${usuarioId}`);
         const transacoes = await respTrans.json();
 
-        // Renderiza as listas
         renderizarTransacoesGerais(transacoes, saldoInicial);
         renderizarHistoricoDespesas(transacoes);
 
     } catch (erro) {
-        console.error("Erro ao carregar dados iniciais:", erro);
+        console.error("Erro ao carregar dados:", erro);
     }
 }
 
-// 4. RENDERIZAR TRANSAÇÕES E CÁLCULO DE SALDO TOTAL
+// 5. SALDO TOTAL + HISTÓRICO GERAL
 function renderizarTransacoesGerais(transacoes, saldoInicial) {
-    const lista = document.getElementById('lista-transacoes');
-    if (!lista) return;
-
+    const lista = document.getElementById("lista-transacoes");
     lista.innerHTML = "";
-    let movimentacaoTotal = 0;
+
+    let movimentacao = 0;
 
     transacoes.forEach(t => {
         const valor = Number(t.valor);
-        movimentacaoTotal += valor;
+        movimentacao += valor;
 
-        const item = document.createElement('li');
-        item.innerHTML = `
+        const li = document.createElement("li");
+        li.innerHTML = `
             <span>${t.data} - ${t.descricao}</span>
-            <b style="color: ${valor < 0 ? '#e74c3c' : '#27ae60'}">
-                R$ ${valor.toFixed(2)}
-            </b>`;
-        lista.appendChild(item);
+            <b style="color:${valor < 0 ? "#e74c3c" : "#27ae60"}">
+                ${formatarMoeda(valor)}
+            </b>
+        `;
+        lista.appendChild(li);
     });
 
-    const saldoTotal = saldoInicial + movimentacaoTotal;
-    const compSaldo = document.getElementById('saldo-valor');
-    if (compSaldo) {
-        compSaldo.textContent = `R$ ${saldoTotal.toFixed(2)}`;
-        compSaldo.style.color = saldoTotal < 0 ? "#e74c3c" : "#ffffff";
-    }
+    const saldoTotal = saldoInicial + movimentacao;
+    const saldoComp = document.getElementById("saldo-valor");
+
+    saldoComp.textContent = formatarMoeda(saldoTotal);
+    saldoComp.style.color = saldoTotal < 0 ? "#e74c3c" : "#ffffff";
 }
 
-// 5. RENDERIZAR HISTÓRICO ESPECÍFICO DE DESPESAS
+// 6. HISTÓRICO DE DESPESAS
 function renderizarHistoricoDespesas(transacoes) {
-    const listaDespesas = document.getElementById('lista-despesas');
-    const despesasValorGeral = document.getElementById('despesas-valor-geral');
-    
-    if (!listaDespesas) return;
+    const lista = document.getElementById("lista-despesas");
+    const totalComp = document.getElementById("despesas-valor-geral");
 
-    listaDespesas.innerHTML = "";
-    let totalDespesasSoma = 0;
+    lista.innerHTML = "";
+    let total = 0;
 
-    const despesas = transacoes.filter(t => Number(t.valor) < 0);
+    transacoes
+        .filter(t => Number(t.valor) < 0)
+        .forEach(t => {
+            const valor = Math.abs(Number(t.valor));
+            total += valor;
 
-    despesas.forEach(t => {
-        const valor = Number(t.valor);
-        totalDespesasSoma += valor;
-
-        const item = document.createElement('li');
-        item.innerHTML = `
-            <span>${t.data} - ${t.descricao}</span>
-            <b style="color:#e74c3c">
-                R$ ${Math.abs(valor).toFixed(2)}
-            </b>`;
-        listaDespesas.appendChild(item);
-    });
-
-    if (despesasValorGeral) {
-        despesasValorGeral.textContent = `R$ ${Math.abs(totalDespesasSoma).toFixed(2)}`;
-    }
-}
-
-// 6. SALVAR TRANSAÇÃO (FORMULÁRIO DIREITO)
-async function salvarTransacao() {
-    const desc = document.getElementById('trans-desc').value;
-    let valorInput = document.getElementById('trans-valor').value;
-    const data = document.getElementById('trans-data').value;
-    const categoriaSelect = document.getElementById('trans-categoria-select');
-
-    if (!desc || !valorInput || !data) {
-        alert("Preencha todos os campos da entrada.");
-        return;
-    }
-
-    // FORÇAR POSITIVO: 
-    // Math.abs garante que se o usuário digitar -50, vire 50.
-    const valor = Math.abs(Number(valorInput));
-
-    const dados = {
-        descricao: desc,
-        valor: valor, // Salva como número positivo no banco
-        data: data,
-        id_usuario: Number(usuarioId),
-        id_categoria: Number(categoriaSelect.value)
-    };
-
-    try {
-        const response = await fetch(`${API_URL}/transacoes`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <span>${t.data} - ${t.descricao}</span>
+                <b style="color:#e74c3c">${formatarMoeda(valor)}</b>
+            `;
+            lista.appendChild(li);
         });
 
-        if (response.ok) {
-            alert("Valor adicionado com sucesso!");
-            location.reload();
-        } else {
-            alert("Erro ao salvar entrada.");
-        }
-    } catch (erro) {
-        console.error("Erro de conexão:", erro);
-    }
+    totalComp.textContent = formatarMoeda(total);
 }
 
-// 7. SALVAR DESPESA (FORMULÁRIO ESQUERDO)
-async function salvarDespesa() {
-    const data = document.getElementById('despesa-data').value;
-    const local = document.getElementById('despesa-local').value;
-    const descricao = document.getElementById('despesa-descricao').value;
-    const valorInput = document.getElementById('despesa-valor-input').value;
-    const pagamento = document.getElementById('despesa-pagamento').value;
-    const categoria = document.getElementById('despesa-categoria-select').value;
+// 7. SALVAR ENTRADA
+async function salvarTransacao() {
+    const desc = document.getElementById("trans-desc").value;
+    const valor = moedaParaNumero(document.getElementById("trans-valor").value);
+    const data = document.getElementById("trans-data").value;
+    const categoria = document.getElementById("trans-categoria-select").value;
 
-    if (!data || !local || !descricao || !valorInput) {
-        alert("Preencha os campos da despesa.");
+    if (!desc || !valor || !data) {
+        alert("Preencha todos os campos.");
         return;
     }
 
-    const valor = Math.abs(Number(valorInput)) * -1;
-
-    const dados = {
-        descricao: `${descricao} • ${local} • ${pagamento}`,
-        valor: valor,
-        data: data,
-        id_usuario: Number(usuarioId),
-        id_categoria: Number(categoria)
-    };
-
-    const response = await fetch(`${API_URL}/transacoes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
+    await fetch(`${API_URL}/transacoes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            descricao: desc,
+            valor,
+            data,
+            id_usuario: Number(usuarioId),
+            id_categoria: Number(categoria)
+        })
     });
 
-    if (response.ok) location.reload();
+    location.reload();
 }
 
-// 8. MODAL SALDO
+// 8. SALVAR DESPESA
+async function salvarDespesa() {
+    const data = document.getElementById("despesa-data").value;
+    const local = document.getElementById("despesa-local").value;
+    const desc = document.getElementById("despesa-descricao").value;
+    const valor = moedaParaNumero(document.getElementById("despesa-valor-input").value);
+    const pagamento = document.getElementById("despesa-pagamento").value;
+    const categoria = document.getElementById("despesa-categoria-select").value;
+
+    if (!data || !local || !desc || !valor) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    await fetch(`${API_URL}/transacoes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            descricao: `${desc} • ${local} • ${pagamento}`,
+            valor: valor * -1,
+            data,
+            id_usuario: Number(usuarioId),
+            id_categoria: Number(categoria)
+        })
+    });
+
+    location.reload();
+}
+
+// 9. MODAL SALDO
 function ajustarSaldoInicial() {
-    document.getElementById('modalSaldo').style.display = 'block';
-    document.getElementById('inputNovoSaldo').focus();
+    document.getElementById("modalSaldo").style.display = "block";
 }
 
 function fecharModal() {
-    document.getElementById('modalSaldo').style.display = 'none';
-    document.getElementById('inputNovoSaldo').value = '';
+    document.getElementById("modalSaldo").style.display = "none";
+    document.getElementById("inputNovoSaldo").value = "";
 }
 
 async function confirmarAjusteSaldo() {
-    const input = document.getElementById('inputNovoSaldo').value;
-    const saldo = Number(input.replace(',', '.'));
+    const saldo = moedaParaNumero(document.getElementById("inputNovoSaldo").value);
 
-    if (isNaN(saldo)) {
-        alert("Valor inválido.");
-        return;
-    }
+    await fetch(`${API_URL}/usuarios/${usuarioId}/saldo-inicial`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ saldo })
+    });
 
-    try {
-        const response = await fetch(`${API_URL}/usuarios/${usuarioId}/saldo-inicial`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ saldo })
-        });
-
-        if (response.ok) {
-            alert("Saldo atualizado!");
-            location.reload();
-        }
-    } catch (e) {
-        alert("Erro na conexão.");
-    } finally {
-        fecharModal();
-    }
+    fecharModal();
+    location.reload();
 }
 
-// 9. METAS
+// 10. METAS
 async function carregarMetas() {
-    try {
-        const resposta = await fetch(`${API_URL}/metas?usuario_id=${usuarioId}`);
-        const metas = await resposta.json();
-        const lista = document.getElementById('lista-metas');
-        if (lista) {
-            lista.innerHTML = metas.map(m => `
-                <li>
-                    <div><strong>${m.nome}</strong><br><small>${m.data_limite}</small></div>
-                    <span>R$ ${Number(m.valor_alvo).toFixed(2)}</span>
-                </li>
-            `).join('');
-        }
-    } catch (e) { console.error("Erro metas:", e); }
+    const res = await fetch(`${API_URL}/metas?usuario_id=${usuarioId}`);
+    const metas = await res.json();
+
+    document.getElementById("lista-metas").innerHTML = metas.map(m => `
+        <li>
+            <div>
+                <strong>${m.nome}</strong><br>
+                <small>${m.data_limite}</small>
+            </div>
+            <span>${formatarMoeda(m.valor_alvo)}</span>
+        </li>
+    `).join("");
 }
 
 async function salvarMeta() {
-    const nome = document.getElementById('meta-nome').value;
-    const valor_alvo = Number(document.getElementById('meta-valor').value);
-    const data_limite = document.getElementById('meta-data').value;
-
-    if (!nome || isNaN(valor_alvo)) return;
+    const nome = document.getElementById("meta-nome").value;
+    const valor = moedaParaNumero(document.getElementById("meta-valor").value);
+    const data = document.getElementById("meta-data").value;
 
     await fetch(`${API_URL}/metas`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, valor_alvo, data_limite, id_usuario: Number(usuarioId) })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            nome,
+            valor_alvo: valor,
+            data_limite: data,
+            id_usuario: Number(usuarioId)
+        })
     });
+
     carregarMetas();
 }
 
-// 10. UTILITÁRIOS
+// 11. UTILITÁRIOS
 function toggleDespesas() {
-    const lista = document.getElementById('lista-despesas');
-    if (lista) lista.classList.toggle('hidden');
+    document.getElementById("lista-despesas").classList.toggle("hidden");
 }
 
 function logout() {
+    document.getElementById("modalLogout").style.display = "block";
+}
+
+function fecharModalLogout() {
+    document.getElementById("modalLogout").style.display = "none";
+}
+
+function confirmarLogout() {
     localStorage.clear();
     window.location.href = "login.html";
 }
 
-// Funções do Menu Lateral (sidenav)
-function openNav() { document.getElementById("mySidenav").style.width = "250px"; }
-function closeNav() { document.getElementById("mySidenav").style.width = "0"; }
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+}
