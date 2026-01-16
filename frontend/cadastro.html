@@ -70,15 +70,16 @@
         }
 
         function mostrarModalSucesso() {
+            console.log("Função mostrarModalSucesso foi chamada");
             const modal = document.getElementById("modalSucesso");
             modal.classList.add("show");
 
             setTimeout(() => {
-                window.location.href = "login.html";
-            }, 9000);
+                console.log("Redirecionando para login...");
+                window.location.href = "./login.html";
+            }, 6000);
         }
     </script>
-
 
 </body>
 </html>
