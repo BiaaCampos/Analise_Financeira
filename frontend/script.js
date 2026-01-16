@@ -12,6 +12,7 @@ function formatarMoeda(valor) {
 
 function moedaParaNumero(valor) {
     if (!valor) return 0;
+
     return Number(
         valor
             .replace(/\s/g, "")
@@ -49,6 +50,19 @@ window.onload = async () => {
     const nomeSalvo = localStorage.getItem("nome_usuario");
     document.getElementById("nome-usuario").textContent =
         nomeSalvo && nomeSalvo !== "null" ? nomeSalvo : "Usuário";
+
+    // 👉 AQUI: setar data de hoje
+    const hoje = new Date();
+    hoje.setMinutes(hoje.getMinutes() - hoje.getTimezoneOffset());
+    const dataHoje = hoje.toISOString().split("T")[0];
+
+    const despesaData = document.getElementById("despesa-data");
+    const transData = document.getElementById("trans-data");
+    const metaData = document.getElementById("meta-data");
+
+    if (despesaData) despesaData.value = dataHoje;
+    if (transData) transData.value = dataHoje;
+    if (metaData) metaData.value = dataHoje;
 
     await carregarDadosIniciais();
     await carregarMetas();
@@ -160,29 +174,41 @@ async function salvarDespesa() {
     const data = document.getElementById("despesa-data").value;
     const local = document.getElementById("despesa-local").value;
     const desc = document.getElementById("despesa-descricao").value;
-    const valor = moedaParaNumero(document.getElementById("despesa-valor-input").value);
     const pagamento = document.getElementById("despesa-pagamento").value;
     const categoria = document.getElementById("despesa-categoria-select").value;
 
-    if (!data || !local || !desc || !valor) {
-        alert("Preencha todos os campos.");
+    const valorReais = moedaParaNumero(
+        document.getElementById("despesa-valor-input").value
+    );
+
+    if (!data || !local || !desc || !valorReais || !categoria) {
+        alert("Preencha todos os campos corretamente.");
         return;
     }
 
-    await fetch(`${API_URL}/transacoes`, {
+    const resposta = await fetch(`${API_URL}/transacoes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             descricao: `${desc} • ${local} • ${pagamento}`,
-            valor: valor * -1,
+            valor: -valorReais,
             data,
             id_usuario: Number(usuarioId),
             id_categoria: Number(categoria)
         })
     });
 
+    if (!resposta.ok) {
+        const erro = await resposta.text();
+        console.error("Erro ao salvar despesa:", erro);
+        alert("Erro ao salvar despesa.");
+        return;
+    }
+
     location.reload();
 }
+
+
 
 // 9. MODAL SALDO
 function ajustarSaldoInicial() {
@@ -245,6 +271,14 @@ async function salvarMeta() {
 // 11. UTILITÁRIOS
 function toggleDespesas() {
     document.getElementById("lista-despesas").classList.toggle("hidden");
+}
+
+function toggleTransacoes() {
+    document.getElementById("lista-transacoes").classList.toggle("hidden");
+}
+
+function toggleMetas() {
+    document.getElementById("lista-metas").classList.toggle("hidden");
 }
 
 function logout() {
