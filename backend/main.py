@@ -107,9 +107,8 @@ def buscar_usuario(usuario_id: int, db: Session = Depends(get_db)):
         "saldo_inicial": usuario.saldo_inicial
     }
 
-# Rota para atualizar o saldo inicial do usuário
 class SaldoUpdate(BaseModel):
-    saldo: float
+    saldo: int
 
 @app.put("/usuarios/{usuario_id}/saldo-inicial")
 def ajustar_saldo_inicial(

@@ -23,7 +23,7 @@
             <label class="label-login">Senha</label>
             <input type="password" id="senha" placeholder="Crie uma senha forte">
             
-            <button onclick="realizarCadastro()" class="btn-sucesso">Cadastrar</button>
+            <button onclick="realizarCadastro()" class="btn-meta" >Cadastrar</button>
         </div>
         
         <div class="auth-footer">
@@ -31,28 +31,54 @@
         </div>
     </div>
 
+    <!-- MODAL -->
+    <div id="modalSucesso" class="modal-sucesso">
+        <div class="modal-sucesso-content">
+            <h3>✅ Conta criada!</h3>
+            <p>Seu cadastro foi realizado com sucesso.</p>
+        </div>
+    </div>
+ 
+
     <script>
         async function realizarCadastro() {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
 
-            if(!nome || !email || !senha) return alert("Preencha todos os campos!");
+            if (!nome || !email || !senha) {
+                alert("Preencha todos os campos!");
+                return;
+            }
 
-            const resposta = await fetch('http://127.0.0.1:8000/usuarios', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha })
-            });
+            try {
+                const resposta = await fetch('http://127.0.0.1:8000/usuarios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha })
+                });
 
-            if (resposta.ok) {
-                alert("Conta criada com sucesso!");
-                window.location.href = "login.html";
-            } else {
-                const erro = await resposta.json();
-                alert("Erro: " + erro.detail);
+                if (resposta.ok) {
+                    mostrarModalSucesso();
+                } else {
+                    const erro = await resposta.json();
+                    alert("Erro: " + erro.detail);
+                }
+            } catch (e) {
+                alert("Erro de conexão com o servidor.");
             }
         }
+
+        function mostrarModalSucesso() {
+            const modal = document.getElementById("modalSucesso");
+            modal.classList.add("show");
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 9000);
+        }
     </script>
+
+
 </body>
 </html>

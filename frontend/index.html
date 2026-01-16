@@ -8,13 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-    href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
     >
 </head>
 <body>
-
 <header>
+    <!-- MENU -->
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="#">Perfil</a>
@@ -30,9 +30,8 @@
         Olá, <span id="nome-usuario">Usuário</span>!
     </div>
 </header>
-
 <main class="container">
-
+    <!-- SALDO -->
     <section class="card saldo-destaque">
         <div class="saldo-info">
             <h3>Saldo Total Disponível</h3>
@@ -41,27 +40,27 @@
         </div>
         <div class="saldo-acoes">
             <button onclick="ajustarSaldoInicial()" class="btn-ajuste">
-                 Ajustar Saldo Inicial
+                Ajustar Saldo Inicial
             </button>
         </div>
     </section>
-
+    <!-- DESPESAS TOTAL -->
     <div class="card">
         <h3>Despesas Total</h3>
         <p id="despesas-valor-geral" class="valor negativo">R$ 0,00</p>
     </div>
-
     <div class="grid-conteudo">
-
+        <!-- COLUNA ESQUERDA -->
         <section class="coluna">
-
+            <!-- REGISTRAR DESPESA -->
             <div class="card" style="border-left: 5px solid #fe0404;">
                 <h2>Registrar Despesa</h2>
                 <div class="form-group">
                     <input type="date" id="despesa-data">
                     <input type="text" id="despesa-local" placeholder="Onde gastou (ex: Mercado)">
                     <input type="text" id="despesa-descricao" placeholder="Com o que foi gasto">
-                    <input type="number" id="despesa-valor-input" placeholder="Valor da despesa">
+                    <!-- INPUT DE MOEDA -->
+                    <input type="text" id="despesa-valor-input" placeholder="Valor da despesa">
                     <select id="despesa-pagamento">
                         <option disabled selected>Forma de pagamento</option>
                         <option>Dinheiro</option>
@@ -78,71 +77,93 @@
                         <option value="5">Moradia</option>
                         <option value="8">Outros</option>
                     </select>
-                    <button onclick="salvarDespesa()" class="btn-despesa">Registrar Despesa</button>
+                    <button onclick="salvarDespesa()" class="btn-despesa">
+                        Registrar Despesa
+                    </button>
                 </div>
             </div>
-
+            <!-- HISTÓRICO DE DESPESAS -->
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2>Histórico de Despesas</h2>
-                    <button onclick="toggleDespesas()" class="btn-ajuste">Mostrar / Ocultar</button>
+                    <button onclick="toggleDespesas()" class="btn-ajuste">
+                        Mostrar / Ocultar
+                    </button>
                 </div>
                 <ul id="lista-despesas" class="lista-estilizada hidden"></ul>
             </div>
-
+            <!-- METAS -->
             <div class="card" style="border-left: 5px solid #1e0070;">
                 <h2>Nova Meta</h2>
                 <div class="form-group">
                     <input type="text" id="meta-nome" placeholder="Nome da Meta">
-                    <input type="number" id="meta-valor" placeholder="Valor Alvo">
+                    <input type="text" id="meta-valor" placeholder="Valor Alvo">
                     <input type="date" id="meta-data">
-                    <button onclick="salvarMeta()" class="btn-meta">Criar Meta</button>
+                    <button onclick="salvarMeta()" class="btn-meta">
+                        Criar Meta
+                    </button>
                 </div>
             </div>
-
             <div class="card">
                 <h2>Minhas Metas</h2>
                 <ul id="lista-metas" class="lista-estilizada"></ul>
             </div>
         </section>
-
         <section class="coluna">
-            <div class="card" style="border-left: 5px solid #27ae60;"> <h2>Nova Entrada</h2>
+            <!-- REGISTRAR ENTRADA -->
+            <div class="card" style="border-left: 5px solid #27ae60;">
+                <h2>Registrar Entrada</h2>
+
                 <div class="form-group">
                     <input type="text" id="trans-desc" placeholder="Descrição (ex: Reembolso, Bônus)">
-                    <input type="number" id="trans-valor" placeholder="Valor (ex: 100.00)">
+                    <input type="text" id="trans-valor" placeholder="Valor">
                     <input type="date" id="trans-data">
-
                     <select id="trans-categoria-select">
                         <option value="4">Salário</option>
                         <option value="8">Outros</option>
                     </select>
-
-                    <button onclick="salvarTransacao()" class="btn-sucesso" style="background-color: #27ae60;">
+                    <button onclick="salvarTransacao()" class="btn-sucesso">
                         Adicionar ao Saldo
                     </button>
                 </div>
             </div>
-
             <div class="card">
-                <h2>Histórico de Transações</h2>
+                <div class="h2-teste">
+                    <h2>Histórico de Transações</h2>
+                </div>
                 <ul id="lista-transacoes" class="lista-estilizada"></ul>
             </div>
         </section>
     </div>
 </main>
-
+<!-- MODAL SALDO -->
 <div id="modalSaldo" class="modal">
     <div class="modal-content">
         <h3>Ajustar Saldo Inicial</h3>
-        <input type="text" id="inputNovoSaldo" placeholder="Digite o novo saldo (ex: 100,00)">
+        <input
+            type="text"
+            id="inputNovoSaldo"
+            class="input-modal-saldo"
+            placeholder="Digite o novo saldo"
+        >
         <div class="modal-buttons">
-            <button onclick="fecharModal()">Cancelar</button>
+            <button onclick="fecharModal()" class="btn-cancel">Cancelar</button>
             <button onclick="confirmarAjusteSaldo()" class="btn-confirmar">Salvar</button>
         </div>
     </div>
 </div>
+<!-- MODAL SAIR -->
+<div id="modalLogout" class="modal">
+    <div class="modal-content">
+        <h3>Confirmar saída</h3>
+        <p>Você tem certeza que deseja sair?</p>
 
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="fecharModalLogout()">Cancelar</button>
+            <button class="btn-confirmar" onclick="confirmarLogout()">Sair</button>
+        </div>
+    </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

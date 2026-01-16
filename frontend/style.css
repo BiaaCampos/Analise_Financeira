@@ -15,6 +15,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-radius: 0 0 5px 5px;
 }
 
 /* MENU LATERAL */
@@ -100,14 +101,14 @@ button {
 }
 
 .btn-sucesso {
-    background: #e4c1f3;
-    color: rgb(88, 0, 102);
+    background-color: #00480bc5;
+    color: rgb(4, 239, 47);
     width: auto;
     transition: transform 0.3s ease;
 }
 
 .btn-sucesso:hover {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 20px rgba(74, 227, 40, 0.464);
     transform: scale(1.05);
 }
 
@@ -159,7 +160,7 @@ button {
 
 .lista-estilizada {
     list-style: none;
-    padding: 0;
+    font-size: 13px;
 }
 
 .lista-estilizada li {
@@ -294,15 +295,77 @@ button {
 
 .modal-content {
     background-color: white;
+    color: rgb(38, 37, 37);
     margin: 15% auto;
-    padding: 20px;
+    padding: 15px;
     width: 300px;
     border-radius: 8px;
     text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .modal-buttons {
     margin-top: 15px;
     display: flex;
-    justify-content: space-around;
+    gap: 10px;
+}
+
+.btn-confirmar{
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.input-modal-saldo {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* MODAL CADASTRO */
+
+.modal-sucesso {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-sucesso.show {
+    display: flex;
+}
+
+.modal-sucesso-content {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    text-align: center;
+    width: 320px;
+    animation: fadeIn 0.3s ease;
+}
+
+/* ANIMAÇÃO */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
