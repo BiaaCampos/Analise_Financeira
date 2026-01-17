@@ -11,6 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
     >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <header>
@@ -30,6 +31,7 @@
         Olá, <span id="nome-usuario">Usuário</span>!
     </div>
 </header>
+<!-- <button id="toggleTheme">🌙</button> -->
 <main class="container">
     <!-- SALDO -->
     <section class="card saldo-destaque">
@@ -59,7 +61,6 @@
                     <input type="date" id="despesa-data">
                     <input type="text" id="despesa-local" placeholder="Onde gastou (ex: Mercado)">
                     <input type="text" id="despesa-descricao" placeholder="Com o que foi gasto">
-                    <!-- INPUT DE MOEDA -->
                     <input type="text" id="despesa-valor-input" placeholder="Valor da despesa">
                     <select id="despesa-pagamento">
                         <option disabled selected>Forma de pagamento</option>
@@ -69,7 +70,8 @@
                         <option>Pix</option>
                         <option>Boleto</option>
                     </select>
-                    <select id="despesa-categoria-select">
+                    <select id="despesa-categoria-select" required>
+                        <option value="" disabled selected>Selecione a categoria</option>
                         <option value="1">Alimentação</option>
                         <option value="2">Lazer</option>
                         <option value="3">Saúde</option>
@@ -77,7 +79,7 @@
                         <option value="5">Moradia</option>
                         <option value="8">Outros</option>
                     </select>
-                    <button onclick="salvarDespesa()" class="btn-despesa">
+                    <button type="button" onclick="salvarDespesa()" class="btn-despesa">
                         Registrar Despesa
                     </button>
                 </div>
@@ -87,7 +89,8 @@
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2>Histórico de Despesas</h2>
                     <button onclick="toggleDespesas()" class="btn-ajuste">
-                        Mostrar / Ocultar
+                        <i id="icon-despesas" class="fa fa-eye"></i>
+                        <span id="text-despesas">Mostrar</span>
                     </button>
                 </div>
                 <ul id="lista-despesas" class="lista-estilizada hidden"></ul>
@@ -105,7 +108,13 @@
                 </div>
             </div>
             <div class="card">
-                <h2>Minhas Metas</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>Minhas Metas</h2>
+                    <button onclick="toggleMetas()" class="btn-ajuste">
+                        <i id="icon-metas" class="fa fa-eye"></i>
+                        <span id="text-metas">Mostrar</span>
+                    </button>
+                </div>
                 <ul id="lista-metas" class="lista-estilizada"></ul>
             </div>
         </section>
@@ -128,8 +137,12 @@
                 </div>
             </div>
             <div class="card">
-                <div class="h2-teste">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2>Histórico de Transações</h2>
+                    <button onclick="toggleTransacoes()" class="btn-ajuste">
+                        <i id="icon-transacoes" class="fa fa-eye"></i>
+                        <span id="text-transacoes">Mostrar</span>
+                    </button>
                 </div>
                 <ul id="lista-transacoes" class="lista-estilizada"></ul>
             </div>
